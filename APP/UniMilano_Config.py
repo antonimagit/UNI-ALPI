@@ -31,7 +31,7 @@ auth_data = {
 
 modelIdParam = 'intfloat/multilingual-e5-large'
 numresultParam = 5
-print("VAFFANGULOOOOO!!")
+
 #MILVUS_HOST = os.getenv("MILVUS_HOST", "localhost")
 #MILVUS_PORT = os.getenv("MILVUS_PORT", "19530")
 

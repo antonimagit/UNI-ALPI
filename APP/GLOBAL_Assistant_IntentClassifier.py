@@ -7,23 +7,17 @@ from datetime import datetime
 CONFIG_FILE = "GLOBAL_Assistant_Classifier_Config.json"
 
 class IntentClassifier:
-    def __init__(self, log_func=None):
-        print("3")
-        
+    def __init__(self, log_func=None):        
         self.log = log_func if log_func else self._default_log
         self.config = self.load_config()  # Carica config UNA SOLA VOLTA
         self.last_matched_pattern = None 
         
-    def _default_log(self, message):
-        print("4")
-        
+    def _default_log(self, message):        
         """Default logging se non viene passata una funzione di log"""
         timestamp = datetime.now().strftime("%H:%M:%S")
         print(f"[{timestamp}] [INTENT] {message}")
     
-    def load_config(self):
-        print("5")
-        
+    def load_config(self):        
         """Carica la configurazione dal file JSON - DEVE ESISTERE"""
         try:
             
@@ -45,10 +39,8 @@ class IntentClassifier:
             error_msg = f"CRITICAL ERROR loading config: {e}"
             self.log(error_msg)
             raise
-    
-    def classify_query_intent(self, user_query, conversation_history=None):
-        print("6")
-        
+
+    def classify_query_intent(self, user_query, conversation_history=None):        
         """
         Classifica l'intent della query dell'utente
         Ritorna: 'FOLLOW_UP' o 'NEW_QUERY'
@@ -104,7 +96,5 @@ class IntentClassifier:
 
 # Funzione di utilità per integrazione facile
 def create_classifier(log_func=None):
-    """Factory function per creare un classificatore"""
-    print("2")
-    
+    """Factory function per creare un classificatore"""   
     return IntentClassifier(log_func)

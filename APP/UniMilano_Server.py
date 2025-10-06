@@ -12,6 +12,7 @@ import redis
 import json
 import logging
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langdetect import detect
 from deep_translator import GoogleTranslator
 from GLOBAL_Assistant_IntentClassifier import create_classifier
 
@@ -73,9 +74,7 @@ app = Flask(__name__,
 
 # Crea l'istanza del classificatore
 try:
-    print("1")
     intent_classifier = create_classifier(tracelog)
-    print("7")
     tracelog("✅ Intent classifier initialized successfully")
 except Exception as e:
     tracelog(f"CRITICAL ERROR: Failed to initialize intent classifier: {e}")
@@ -85,14 +84,7 @@ except Exception as e:
 
 
 def get_db_connection():
-    return psycopg2.connect(
-        host="127.0.0.1",
-        port="5432",
-        database="CSMDemoConfig",
-        user="postgres",
-        password="postgres"
-    )
-
+    return psycopg2.connect(**DB_CONFIG)
 
 # ================================================================
 # MILVUS
@@ -197,9 +189,12 @@ def home():
 @app.route('/unimilanoconfig')
 def unimilano_config():
     try:
+        tracelog("Starting /unimilanoconfig route")
         conn = get_db_connection()
+        tracelog("DB connection successful")
         cur = conn.cursor()
-
+        
+        print("1")
         cur.execute(
             'SELECT * FROM public."UNIMILANO_BlackList" ORDER BY "idBlackList" ASC')
         blacklist = cur.fetchall()
@@ -210,7 +205,9 @@ def unimilano_config():
 
         cur.close()
         conn.close()
-
+        
+        print("2")
+        
         # Converti tuple in dict per il template
         blacklist_data = [
             {
@@ -220,7 +217,9 @@ def unimilano_config():
                 'threshold': row[3]
             } for row in blacklist
         ]
-
+        
+        print("3")
+        
         insights_data = [
             {
                 'ID_insight': row[0],
@@ -228,13 +227,19 @@ def unimilano_config():
                 'LinkRisorsa': row[2]
             } for row in insights
         ]
+        
+        print("4")
+        
 
-        return render_template('UnimilanoConfig.html',
+        return render_template('unimilanoconfig.html',
                                blacklist=blacklist_data,
                                insights=insights_data)
     except Exception as e:
-        tracelog(f"Error in /unimilanoconfig: {e}")
-        return "Errore caricamento dati", 500
+        import traceback
+        error_details = traceback.format_exc()
+        tracelog(f"❌ Error in /unimilanoconfig: {e}")
+        tracelog(f"Full traceback:\n{error_details}")
+        return f"Errore: {str(e)}<br><pre>{error_details}</pre>", 500
 
 
 @app.route('/emailtemplateunimilano/update', methods=['POST'])
@@ -575,7 +580,6 @@ def GenerateResponse(input_text, documentChunks, conversation_history=[], useCac
 
 
 def detect_language(user_text):
-    from langdetect import detect
     try:
         lang = detect(user_text)
         return lang
@@ -777,4 +781,4 @@ def save_conversation_turn(session_id, user_query, assistant_response, intent=No
 
 if __name__ == "__main__":
     logging.getLogger('werkzeug').setLevel(logging.ERROR)
-    app.run(host='0.0.0.0', port=8080, debug=False)
+    app.run(host='0.0.0.0', port=8080, debug=True)
