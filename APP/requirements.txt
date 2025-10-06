@@ -1,0 +1,10 @@
+flask
+psycopg2-binary
+requests
+rapidfuzz
+redis
+langchain-text-splitters
+deep-translator
+ibm-watsonx-ai
+ibm-cloud-sdk-core
+pymilvus

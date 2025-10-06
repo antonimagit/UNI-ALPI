@@ -1,0 +1,28 @@
+{
+  "followup_patterns": {
+    "dettaglio_richieste": [
+      "(pi[uù]\\s*dettagliat|pi[uù]\\s*precis|pi[uù]\\s*chiaro|approfond|elabora|espandi|sviluppa)",
+      "(spiegami\\s*meglio|spiega\\s*meglio)",
+      "(maggior[ei]\\s*informaz|altre\\s*informaz|pi[uù]\\s*info)",
+      "(puoi|potresti|mi\\s*puoi)\\s*(dire|spiegare|raccontare).*(su|sulla|della|precedent|prima|rispost)"
+    ],
+
+    "riferimenti_precedenti": [
+      "(come\\s*(hai|avevi)\\s*detto|come\\s*dicevi|hai\\s*detto\\s*che)",
+      "(quello\\s*che\\s*hai\\s*(detto|scritto)|nella\\s*risposta|prima\\s*risposta)",
+      "(prima\\s*hai|poco\\s*fa\\s*hai|hai\\s*appena)",
+      "(di\\s*cui\\s*hai\\s*parlat|che\\s*hai\\s*menzionat)",
+      "(ok,)"
+    ],
+
+    "conferma_chiarimento": [
+      "(non\\s*ho\\s*capit|non\\s*capisc|non\\s*(è|e)\\s*chiaro)",
+      "(confus[oaie]|dubbio|dubbi)"
+    ]
+  },
+
+  "settings": {
+    "require_conversation_history_for_followup": true,
+    "enable_logging": true
+  }
+}

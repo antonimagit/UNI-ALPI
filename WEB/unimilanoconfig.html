@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://www.unimi.it/sites/default/files/favicon_0_0.ico" type="image/vnd.microsoft.icon">
+    <title>Home - Università degli studi di Milano</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+        }
+
+        .headerSmall {
+            background-color: #001a33;
+            padding: 15px 20px;
+            padding-left: 250px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+            color: white;
+        }
+
+        .headerSmall a {
+            font-size: 0.85rem;
+            font-weight: 300;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .headerSmall img {
+            width: 230px;
+            height: auto;
+            padding-right: 15%;
+        }
+
+        .header {
+            background-color: #225499;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            justify-content: left;
+            width: 100%;
+            padding-top: 0px;
+            padding-left: 12%;
+            margin: 0 auto;
+            margin-top: 10px;
+        }
+
+        .containerHeader {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            width: 100%;
+        }
+
+        .leftbox {
+            float: left;
+            width: 33%;
+        }
+
+        .middlebox {
+            float: left;
+            width: 33%;
+        }
+
+        .rightbox {
+            float: right;
+            width: 33%;
+        }
+
+        .logo img {
+            height: 100px;
+            margin-right: 10px;
+        }
+
+        .user-info {
+            color: black;
+            font-weight: bold;
+        }
+
+        .main-content {
+            background-color: #225499;
+            color: white;
+            padding: 50px 20px;
+            text-align: left;
+            font-size: 20px;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+
+        .main-content h1 {
+            font-size: 40px;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+
+        .cta-button {
+            background-color: white;
+            color: #c00;
+            padding: 15px 30px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            background-color: #eee;
+        }
+
+        .info-box {
+            padding: 30px;
+            color: black;
+        }
+
+        .nav-horizontal {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            gap: 40px;
+        }
+
+        .nav-horizontal a {
+            font-size: 1rem;
+            font-weight: 300;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .nav-horizontal a:hover,
+        .nav-horizontal a:focus {
+            text-decoration: underline;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        section {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            width: 60%;
+        }
+
+        h2 {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+
+        .config-link {
+            display: block;
+            margin: 10px 0;
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+        .config-linkEmail {
+            margin: 10px 0;
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+        .config-link:hover {
+            text-decoration: underline;
+        }
+
+        .input-group {
+            margin-bottom: 10px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .input-group input {
+            width: 15%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid lightgray;
+        }
+
+        .accordion-button {
+            float: right;
+            font-size: 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color:#004181;
+        }
+
+        .accordion-content {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 3px solid #ccc;
+            border-top: 3px solid #333;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div style="text-align:center;height:50px;width:100%; max-height:50px; overflow:hidden;">
+        <a href="/"><img src="images/SectionMain.jpeg" style="width:100%;"></a>
+    </div>
+    <div style="margin: 40px;">
+        
+        <section>
+            <h2 style="color:#004181;">
+                Gestione Domande Blacklist
+                <button class="accordion-button" onclick="toggleAccordion('accordion-blacklist', this)">&#9660;</button>
+            </h2>
+            <div id="accordion-blacklist" class="accordion-content">
+                <h3>Domande attuali</h3>
+                <ul>
+                    {% if blacklist|length == 0 %}
+                        <li>Nessuna domanda presente</li>
+                    {% else %}
+                        {% for item in blacklist %}
+                            <li style="padding-top: 10px;">
+                                Domanda:&nbsp;{{ item.Question }}
+                                <br>
+                                Risposta:&nbsp;{{ item.Answer }}
+                                &nbsp;(TS: {{ item.threshold }})
+                                <form action="/blacklistunimilano/delete/{{ item.idBlackList }}" method="POST"
+                                    style="display:inline;">
+                                    <button type="submit" style="margin-left:10px;">Elimina</button>
+                                </form>
+                            </li>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+
+                <hr>
+
+                <h3>Nuova domanda da inserire</h3>
+                <form action="/blacklistunimilano/add" method="POST">
+                    <input type="text" name="question" required
+                        style="width: 50%; padding: 8px;border:1px solid lightgray;"
+                        placeholder="Inserisci nuova domanda">
+                    <br>
+                    <br>
+                    <input type="text" name="answer" required
+                        style="width: 50%; padding: 8px;border:1px solid lightgray;"
+                        placeholder="Inserisci la risposta">
+                    <br>
+                    <br>
+                    &nbsp;
+                    &nbsp;Threshold: <select style="height:32px; border:1px solid lightgray;" name="threshold"
+                        id="threshold">
+                        <option value="0.1">0.1</option>
+                        <option value="0.2">0.2</option>
+                        <option value="0.3">0.3</option>
+                        <option value="0.4">0.4</option>
+                        <option value="0.5">0.5</option>
+                        <option value="0.6">0.6</option>
+                        <option value="0.7">0.7</option>
+                        <option value="0.8" selected>0.8</option>
+                        <option value="0.9">0.9</option>
+                        <option value="1">1</option>
+                    </select>
+                    <button type="submit">Aggiungi</button>
+                </form>
+            </div>
+        </section>
+
+        <section>
+            <h2 style="color:#004181;">
+                Gestione Elenco Insights
+                <button class="accordion-button" onclick="toggleAccordion('accordion-insights', this)">&#9660;</button>
+            </h2>
+            <div id="accordion-insights" class="accordion-content">
+                <h3>Insights attuali</h3>
+                <ul>
+                    {% if insights|length == 0 %}
+                        <li>Nessun insight presente</li>
+                    {% else %}
+                        {% for item in insights %}
+                            <li style="padding-top: 10px;">
+                                "Insight: "&nbsp;{{ item.Insights }}
+                                <br>
+                                "Risorsa: "&nbsp;<a target="_blank" href="{{ item.LinkRisorsa }}">
+                                    {{ item.LinkRisorsa }}
+                                </a>
+                                <br><br>
+                                <form action="/insightsunimilano/delete/{{ item.ID_insight }}" method="POST"
+                                    style="display:inline;" onsubmit="showLoader(this)">
+                                    <input type="hidden" name="LinkRisorsa" value="{{ item.LinkRisorsa }}">
+                                    <button id="submitBtnDel" type="submit">Elimina</button>
+                                    <span id="loaderDel" class="spinner" style="display: none; margin-left: 10px;"></span>
+                                </form>
+                                <br><br>
+                            </li>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+
+                <hr>
+
+                <h3>Nuovo insight da inserire</h3>
+                <form action="/insightsunimilano/add" method="POST" onsubmit="showLoader(this)">
+                    <textarea name="insight" rows="6" placeholder="Inserisci nuovo insight"
+                        style="width:100%; font-family:monospace; border:1px solid lightgray;"></textarea>
+                    <br><br>
+                    <input type="text" name="LinkRisorsa" required style="width: 50%; padding: 8px;"
+                        placeholder="Inserisci il link della risorsa">
+                    <br><br>
+                    <button type="submit" id="submitBtn">
+                        Aggiungi
+                        <span id="loader" class="spinner" style="display: none; margin-left: 10px;"></span>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+    </div>
+    <br>
+    <script>
+        function showLoader(form) {
+            const button = form.querySelector('button');
+            const loader = form.querySelector('.spinner');
+          
+            if (button && loader) {
+              button.disabled = true;
+              loader.style.display = 'inline-block';
+            }
+        }
+
+        function toggleAccordion(contentId, button) {
+            const content = document.getElementById(contentId);
+            if (content.style.display === "none" || content.style.display === "") {
+                content.style.display = "block";
+                button.innerHTML = "&#9650;";
+            } else {
+                content.style.display = "none";
+                button.innerHTML = "&#9660;";
+            }
+        }
+
+        window.onload = () => {
+            document.querySelectorAll(".accordion-content").forEach(div => {
+                div.style.display = "block";
+            });
+
+            document.querySelectorAll(".accordion-button").forEach(btn => {
+                btn.innerHTML = "&#9650;";
+            });
+        };
+    </script>
+
+</body>
+
+</html>

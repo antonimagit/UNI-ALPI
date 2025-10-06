@@ -1,0 +1,137 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+      "title": "Flask",
+      "version": "0.1.0"
+    },
+    "servers": [
+      {
+        "url": "https://f9fc5cf61721.ngrok-free.app"
+      }
+    ],
+    "paths": {
+      "/": {
+        "get": {
+          "summary": "Read Root",
+          "operationId": "read_root__get",
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {}
+                }
+              }
+            }
+          }
+        }
+      },
+      "/query": {
+        "post": {
+          "summary": "Query on Milvus",
+          "operationId": "query_on_milvus",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueryRequest"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "resultGenAI": {
+                        "type": "string",
+                        "title": "Query Result"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "422": {
+              "description": "Validation Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "HTTPValidationError": {
+          "properties": {
+            "detail": {
+              "items": {
+                "$ref": "#/components/schemas/ValidationError"
+              },
+              "type": "array",
+              "title": "Detail"
+            }
+          },
+          "type": "object",
+          "title": "HTTPValidationError"
+        },
+        "QueryRequest": {
+          "properties": {
+            "input_text": {
+              "type": "string",
+              "title": "input_text"
+            },
+            "custom_session_id": {
+              "type": "string",
+              "title": "custom_session_id"
+            },
+            "filterSearch": {
+              "type": "string",
+              "title": "filterSearch"
+            }
+          },
+          "type": "object",
+          "required": [
+            "input_text",
+            "custom_session_id"
+          ],
+          "title": "QueryRequest"
+        },
+        "ValidationError": {
+          "properties": {
+            "loc": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "title": "Location"
+            },
+            "msg": {
+              "type": "string",
+              "title": "Message"
+            },
+            "type": {
+              "type": "string",
+              "title": "Error Type"
+            }
+          },
+          "type": "object",
+          "required": [
+            "loc", "msg", "type"
+          ],
+          "title": "ValidationError"
+        }
+      }
+    }
+  }
