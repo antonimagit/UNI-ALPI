@@ -59,6 +59,7 @@ try:
     redis_client = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, decode_responses=True)
     redis_client.ping()
     tracelog("✅ Redis connected successfully")
+    tracelog("buttami")
 except Exception as e:
     tracelog(f"Redis connection failed: {e}")
     redis_client = None
