@@ -26,8 +26,8 @@ DELETE_COLLECTION_IF_EXISTS = True
 
 #*** WATSONX CONFIG ***
 WX_URL = "https://us-south.ml.cloud.ibm.com"
-WX_API_KEY = "UFdtP35V3nYzrWiHQPv73YL4dE2VrtGmdQH0KQozV6KE"
-WX_PROJECT_ID = 'b356b7e8-37ca-4add-94ef-433419edebe5'
+WX_API_KEY = "fpMu8viNLafvrayEkNyXxKjyYWOz9rFqzFBbg47-6U2i"
+WX_PROJECT_ID = '05a78408-7b0c-4c6f-ad34-5e267488200c'
 WX_EMBEDING_MODEL = "intfloat/multilingual-e5-large"
 WX_EMBEDING_MODEL_DIM = 1024
 

@@ -193,10 +193,11 @@ async function onLoad(instance) {
 
 // Configurazione dell'istanza di Watson Assistant
 window.watsonAssistantChatOptions = {
-    integrationID: "3316dd9c-0388-4235-ac9d-86b33e8a69d3",
-    region: "us-south",
-    serviceInstanceID: "5bebf237-3cda-4426-b626-0210ae8f2ea3",
+    integrationID: "f73a5cb3-84f2-41b6-9fe8-ada16280ca31", // The ID of this integration.
+    region: "wxo-us-south", // The region your integration is hosted in.
+    serviceInstanceID: "8a4196f0-04c4-4878-bba0-e0d22a03c401",
     disableSessionHistory: false,
+    orchestrateUIAgentExtensions: true, //If you wish to enable optional UI Agent extensions.
     onLoad: onLoad, // Collega la funzione di caricamento
 };
 

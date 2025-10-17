@@ -537,9 +537,10 @@ def GenerateResponse(input_text, documentChunks, conversation_history=[], useCac
     strPrompt += input_text.strip() + '\n'
     strPrompt += 'Risposta:'
 
-    tracelog('=' * 70)
-    tracelog(strPrompt)
-    tracelog('=' * 70)
+    if strPrompt:
+        tracelog('=' * 70)
+        tracelog(f"Lunghezza prompt: {len(strPrompt)}")
+        tracelog('=' * 70)
 
     body = {
         "input": strPrompt,
