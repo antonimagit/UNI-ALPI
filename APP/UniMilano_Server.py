@@ -1,3 +1,4 @@
+print("Starting importing libreries...")
 import os
 from UniMilano_Config import *
 from difflib import SequenceMatcher
@@ -53,6 +54,8 @@ DB_CONFIG = {
     "user": os.getenv("DB_USER", "postgres"),
     "password": os.getenv("DB_PASSWORD", "postgres")
 }
+
+print("Server starting...")
 
 # Setup Redis
 try:

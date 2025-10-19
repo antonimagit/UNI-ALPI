@@ -197,8 +197,18 @@ window.watsonAssistantChatOptions = {
     region: "wxo-us-south", // The region your integration is hosted in.
     serviceInstanceID: "8a4196f0-04c4-4878-bba0-e0d22a03c401",
     disableSessionHistory: false,
-    orchestrateUIAgentExtensions: true, //If you wish to enable optional UI Agent extensions.
-    onLoad: onLoad, // Collega la funzione di caricamento
+    orchestrateUIAgentExtensions: false, //If you wish to enable optional UI Agent extensions.
+    disableSessionHistory: true,
+    onLoad: onLoad,
+    disclaimer: {
+      isOn: false,
+      disclaimerHTML: `
+        <div style="font-size: 14px; line-height: 1.5;">
+          <strong>Nota importante:</strong> le risposte di questo assistente possono essere generate da sistemi di intelligenza artificiale.
+          Non inserire dati personali o sensibili. <a href="https://www.ibm.com/privacy" target="_blank">Informativa sulla privacy</a>.
+        </div>
+      `
+    }
 };
 
 // Carica il script del Watson Assistant dopo un timeout
