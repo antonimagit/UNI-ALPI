@@ -38,9 +38,9 @@ minChunkSize = 20
 
 def tracelog(message):
     timestamp = datetime.now().strftime("%H:%M:%S")
-    print(f"[{timestamp}] -> {message}")
+    print(f"[{timestamp}] -> {message}", flush=True)
 
-REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
+REDIS_HOST = os.getenv("REDIS_HOST", "redis-app-shared")
 REDIS_PORT = os.getenv("REDIS_PORT", "6379")
 
 MILVUS_HOST = os.getenv("MILVUS_HOST", "localhost")
@@ -48,14 +48,14 @@ MILVUS_PORT = os.getenv("MILVUS_PORT", "19530")
 MILVUS_PROTOCOL = "http"
 
 DB_CONFIG = {
-    "host": os.getenv("DB_HOST", "localhost"),
+    "host": os.getenv("DB_HOST", "postgres"),
     "database": os.getenv("DB_NAME", "CSMDemoConfig"),
     "port": int(os.getenv("DB_PORT", "5432")),
     "user": os.getenv("DB_USER", "postgres"),
     "password": os.getenv("DB_PASSWORD", "postgres")
 }
 
-print("Server starting...")
+tracelog("Server starting...")
 
 # Setup Redis
 try:
@@ -117,13 +117,13 @@ def delete_data_from_milvus(filter_expression, flush=True):
         if flush:
             milvusClient.flush(collection_name=collectionName)
             time.sleep(0.5)
-        print(f"✅ Eliminati record da '{collectionName}' con filtro: {filter_expression}")
+        tracelog(f"✅ Eliminati record da '{collectionName}' con filtro: {filter_expression}")
     except Exception as e:
-        print(f"❌ Errore durante l'eliminazione: {e}")
+        tracelog(f"❌ Errore durante l'eliminazione: {e}")
 
 def insert_data_to_milvus(link, contentPage):
     try:
-        print("Processing: " + link)
+        tracelog("Processing: " + link)
 
         chunks = GetChunksFromText(contentPage)
         numChunks = len(chunks)
@@ -161,7 +161,7 @@ def insert_data_to_milvus(link, contentPage):
             milvusClient = MilvusClient(uri=uriConfig)
             res = milvusClient.insert(collection_name=collectionName, data=data)
     except Exception as e:
-        print(f"❌ Errore durante l'inserimento: {e}")
+        tracelog(f"❌ Errore durante l'inserimento: {e}")
 
 
 def EmbeddingText_WX(texts):
@@ -197,7 +197,6 @@ def unimilano_config():
         tracelog("DB connection successful")
         cur = conn.cursor()
         
-        print("1")
         cur.execute(
             'SELECT * FROM public."UNIMILANO_BlackList" ORDER BY "idBlackList" ASC')
         blacklist = cur.fetchall()
@@ -209,8 +208,6 @@ def unimilano_config():
         cur.close()
         conn.close()
         
-        print("2")
-        
         # Converti tuple in dict per il template
         blacklist_data = [
             {
@@ -221,8 +218,6 @@ def unimilano_config():
             } for row in blacklist
         ]
         
-        print("3")
-        
         insights_data = [
             {
                 'ID_insight': row[0],
@@ -230,10 +225,7 @@ def unimilano_config():
                 'LinkRisorsa': row[2]
             } for row in insights
         ]
-        
-        print("4")
-        
-
+          
         return render_template('unimilanoconfig.html',
                                blacklist=blacklist_data,
                                insights=insights_data)
@@ -503,15 +495,6 @@ def is_similar_text(q1, q2, threshold=0.8):
     return SequenceMatcher(None, q1.lower(), q2.lower()).ratio() >= threshold
 
 
-def EmbeddingText_WX(texts):
-    try:
-        embedding_vectors = embedding.embed_documents(texts=texts)
-        return embedding_vectors[0]
-    except Exception as e:
-        logging.error(f"Error embedding texts with watsonx: {e}")
-        return None
-
-
 def GenerateResponse(input_text, documentChunks, conversation_history=[], useCacheInLLM=False):
 
     strPrompt = ''
@@ -672,6 +655,7 @@ Nuova query:"""
 
 def ProcessDocSearch(userChat, filterSearch):
     try:
+        tracelog("Eseguo la query su Milvus...")
         modelDimension = 1024
         embeddings = EmbeddingText_WX([userChat])
         if not connections.has_connection("default"):
@@ -679,6 +663,8 @@ def ProcessDocSearch(userChat, filterSearch):
                 alias="default", host=MILVUS_HOST, port=MILVUS_PORT)
         collection = Collection("UniMilano")
         collection.load()
+        tracelog("Collection loaded succesfully")
+        
         query_vectors = [embeddings]
         # search_params = {"metric_type": "IP", "params": {"nprobe": 150}}
         search_params = {"metric_type": "COSINE"}
@@ -722,6 +708,7 @@ def ProcessDocSearch(userChat, filterSearch):
         return documentChunks, documentLinks
 
     except Exception as e:
+        tracelog("ERROR ON MILVUS: " + str(e))
         return "null", f"Error during the query in Milvus: {str(e)}"
 
 

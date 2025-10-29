@@ -1,4 +1,3 @@
-#import os
 from ibm_watsonx_ai.metanames import EmbedTextParamsMetaNames as EmbedParams
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from ibm_watsonx_ai.foundation_models import Embeddings
