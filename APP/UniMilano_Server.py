@@ -40,13 +40,6 @@ def tracelog(message):
     timestamp = datetime.now().strftime("%H:%M:%S")
     print(f"[{timestamp}] -> {message}", flush=True)
 
-REDIS_HOST = os.getenv("REDIS_HOST", "redis-app-shared")
-REDIS_PORT = os.getenv("REDIS_PORT", "6379")
-
-MILVUS_HOST = os.getenv("MILVUS_HOST", "localhost")
-MILVUS_PORT = os.getenv("MILVUS_PORT", "19530")
-MILVUS_PROTOCOL = "http"
-
 DB_CONFIG = {
     "host": os.getenv("DB_HOST", "postgres"),
     "database": os.getenv("DB_NAME", "CSMDemoConfig"),
