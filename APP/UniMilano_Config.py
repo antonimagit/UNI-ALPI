@@ -58,7 +58,7 @@ except Exception as e:
 model_id = modelIdParam
 project_id = WATSONX_PROJECTID_TZ
 embed_params = {
-    EmbedParams.TRUNCATE_INPUT_TOKENS: 1024,
+    EmbedParams.TRUNCATE_INPUT_TOKENS: TRUNCATE_INPUT_TOKENS,
     EmbedParams.RETURN_OPTIONS: {'input_text': True}
 }
 

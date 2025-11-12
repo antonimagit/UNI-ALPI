@@ -50,7 +50,7 @@ model = None
 credentials = Credentials(url=WX_URL, api_key=WX_API_KEY)
 ai_client = APIClient(credentials)
 embed_params = {
-    EmbedParams.TRUNCATE_INPUT_TOKENS: WX_EMBEDING_MODEL_DIM,
+    EmbedParams.TRUNCATE_INPUT_TOKENS: 512,
     EmbedParams.RETURN_OPTIONS: {'input_text': True}
 }
 embedding = Embeddings(

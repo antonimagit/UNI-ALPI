@@ -33,7 +33,7 @@ if modelIdParam == 'intfloat/multilingual-e5-large':
     credentials = Credentials(url=WATSONX_URL, api_key=WATSONX_API_KEY_TZ)
     ai_client = APIClient(credentials)
     embed_params = {
-        EmbedParams.TRUNCATE_INPUT_TOKENS: 1024,
+        EmbedParams.TRUNCATE_INPUT_TOKENS: TRUNCATE_INPUT_TOKENS,
         EmbedParams.RETURN_OPTIONS: {'input_text': True}
     }
     embedding = Embeddings(
