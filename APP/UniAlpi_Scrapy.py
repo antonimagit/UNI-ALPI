@@ -14,7 +14,7 @@ def get_timestamp_str():
 SAVE_TEXT = True
 timestamp = get_timestamp_str()
 URL_TO_SCRAP = "https://web.archive.org/web/20250401085050/https://www.unimi.it/it/studiare"
-SITE_NAME = "UNIMILANO"
+SITE_NAME = "UNIALPI"
 MAX_DEPTH = 2        # 0 = solo la root, 1 = root + link, 2 = anche i link dei link
 RECURSIVE = True     # una sola volta qui
 output_dir = Path("scraped_texts") / SITE_NAME / timestamp

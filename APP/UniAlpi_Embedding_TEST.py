@@ -29,7 +29,7 @@ useWx = True
 useLocal = True
 
 modelIdParam = 'intfloat/multilingual-e5-large'
-folderPath = 'scraped_texts/UNIMILANO/2025_10_01_18_00_00'
+folderPath = 'scraped_texts/UNIALPI/2025_10_01_18_00_00'
 
 modelDimension = 1024 if modelIdParam == 'intfloat/multilingual-e5-large' else 384
 model = None

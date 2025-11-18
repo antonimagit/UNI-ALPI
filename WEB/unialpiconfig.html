@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="https://www.unimi.it/sites/default/files/favicon_0_0.ico" type="image/vnd.microsoft.icon">
-    <title>Home - Università degli studi di Milano</title>
+    <title>Home - Università degli studi di ALPI</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -251,7 +251,7 @@
                                 <br>
                                 Risposta:&nbsp;{{ item.Answer }}
                                 &nbsp;(TS: {{ item.threshold }})
-                                <form action="/blacklistunimilano/delete/{{ item.idBlackList }}" method="POST"
+                                <form action="/blacklistunialpi/delete/{{ item.idBlackList }}" method="POST"
                                     style="display:inline;">
                                     <button type="submit" style="margin-left:10px;">Elimina</button>
                                 </form>
@@ -263,7 +263,7 @@
                 <hr>
 
                 <h3>Nuova domanda da inserire</h3>
-                <form action="/blacklistunimilano/add" method="POST">
+                <form action="/blacklistunialpi/add" method="POST">
                     <input type="text" name="question" required
                         style="width: 50%; padding: 8px;border:1px solid lightgray;"
                         placeholder="Inserisci nuova domanda">
@@ -312,7 +312,7 @@
                                     {{ item.LinkRisorsa }}
                                 </a>
                                 <br><br>
-                                <form action="/insightsunimilano/delete/{{ item.ID_insight }}" method="POST"
+                                <form action="/insightsunialpi/delete/{{ item.ID_insight }}" method="POST"
                                     style="display:inline;" onsubmit="showLoader(this)">
                                     <input type="hidden" name="LinkRisorsa" value="{{ item.LinkRisorsa }}">
                                     <button id="submitBtnDel" type="submit">Elimina</button>
@@ -327,7 +327,7 @@
                 <hr>
 
                 <h3>Nuovo insight da inserire</h3>
-                <form action="/insightsunimilano/add" method="POST" onsubmit="showLoader(this)">
+                <form action="/insightsunialpi/add" method="POST" onsubmit="showLoader(this)">
                     <textarea name="insight" rows="6" placeholder="Inserisci nuovo insight"
                         style="width:100%; font-family:monospace; border:1px solid lightgray;"></textarea>
                     <br><br>

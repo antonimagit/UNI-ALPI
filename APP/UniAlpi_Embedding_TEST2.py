@@ -12,57 +12,42 @@ from datetime import datetime
 import time
 from urllib.parse import urlparse
 import pdfplumber
+import re
+from GLOBAL_keys import *
 
-
-# *************** INITIAL PARAMETERS ***************
-#*** MILVUS CONFIG ***
-MILVUS_URL = "http://localhost"
-MILVUS_PORT = "19530"
-MILVUS_HOST = "localhost"
-MILVUS_ALIAS = "default"
-COLLECTION_NAME = "samplecollection"
-COLLECTION_DESCR = "Description for samplecollection"
-DELETE_COLLECTION_IF_EXISTS = True
-
-#*** WATSONX CONFIG ***
-WX_URL = "https://us-south.ml.cloud.ibm.com"
-WX_API_KEY = "fpMu8viNLafvrayEkNyXxKjyYWOz9rFqzFBbg47-6U2i"
-WX_PROJECT_ID = '05a78408-7b0c-4c6f-ad34-5e267488200c'
-WX_EMBEDING_MODEL = "intfloat/multilingual-e5-large"
-WX_EMBEDING_MODEL_DIM = 1024
-
-#*** DOCUMENT TO IMPORT CONFIG ***
-DOCUMENT_FOLDER_PATH = "/Users/antoniomarinelli/Desktop/Python Mongodb/scraped_texts/UNIMILANO/2025_10_01_18_00_00"
-DOCUMENT_CSV_FILE = "scraped_pages.csv"
-
-
-collectionName = COLLECTION_NAME
+############### CONFIGURATION #################
+collectionName = "UniMilano"
 minChunkSize = 200
+################################################
 
 useWx = True
 useLocal = True
 
-modelIdParam = WX_EMBEDING_MODEL
+modelIdParam = 'intfloat/multilingual-e5-large'
+folderPath = 'scraped_texts/UNIALPI/2025_10_01_18_00_00'
 
-modelDimension = WX_EMBEDING_MODEL_DIM
+modelDimension = 1024 if modelIdParam == 'intfloat/multilingual-e5-large' else 384
 model = None
 
-credentials = Credentials(url=WX_URL, api_key=WX_API_KEY)
-ai_client = APIClient(credentials)
-embed_params = {
-    EmbedParams.TRUNCATE_INPUT_TOKENS: 512,
-    EmbedParams.RETURN_OPTIONS: {'input_text': True}
-}
-embedding = Embeddings(
-    model_id=modelIdParam,
-    credentials=ai_client.credentials,
-    params=embed_params,
-    project_id=WX_PROJECT_ID,
-    verify=False
-)
+if modelIdParam == 'intfloat/multilingual-e5-large':
+    credentials = Credentials(url=WATSONX_URL, api_key=WATSONX_API_KEY_TZ)
+    ai_client = APIClient(credentials)
+    embed_params = {
+        EmbedParams.TRUNCATE_INPUT_TOKENS: TRUNCATE_INPUT_TOKENS,
+        EmbedParams.RETURN_OPTIONS: {'input_text': True}
+    }
+    embedding = Embeddings(
+        model_id=modelIdParam,
+        credentials=ai_client.credentials,
+        params=embed_params,
+        project_id=WATSONX_PROJECTID_TZ,
+        verify=False
+    )
+else:
+    model = SentenceTransformer(modelIdParam)
 
-connections.connect(alias=MILVUS_ALIAS, host=MILVUS_HOST, port=MILVUS_PORT)
-milvusClient = MilvusClient(uri=MILVUS_URL)
+connections.connect(alias="default", host='localhost', port='19530')
+milvusClient = MilvusClient(uri="http://localhost:19530")
 
 def clean_text(text):
     return "\n".join([line.strip() for line in text.splitlines() if line.strip()])
@@ -100,6 +85,7 @@ def extract_language_from_url(url):
         return "unknown"
 
 def table_to_markdown(table):
+    """Converte tabella in markdown"""
     if not table or not table[0]:
         return ""
     
@@ -120,6 +106,7 @@ def table_to_markdown(table):
     return "\n".join(markdown_rows)
 
 def pdf_to_markdown(pdf_path):
+    """Converte PDF in markdown con tabelle"""
     markdown_content = []
     
     with pdfplumber.open(pdf_path) as pdf:
@@ -145,9 +132,6 @@ def ProcessTxtFile(documentPath, url, depth, language, documentType):
     chunks = [clean_text(c) for c in GetChunks(content)]
     numChunks = len(chunks)
 
-    MAX_CONTENT_LENGTH = 64000
-    content_page = content[:MAX_CONTENT_LENGTH] if len(content) > MAX_CONTENT_LENGTH else content
-  
     for indexChunk, chunk in enumerate(chunks, start=1):
         if len(chunk) < minChunkSize:
             continue
@@ -155,7 +139,7 @@ def ProcessTxtFile(documentPath, url, depth, language, documentType):
             EmbeddingText_WX([chunk]) if useWx else EmbeddingText_ST([chunk])[0]
         )
         data = [{
-            "docPath": DOCUMENT_FOLDER_PATH,
+            "docPath": folderPath,
             "documentName": documentName,
             "section": 'webpage',
             "link": url,
@@ -163,7 +147,7 @@ def ProcessTxtFile(documentPath, url, depth, language, documentType):
             "depth": int(depth),
             "documentType": documentType,
             "contentChunk": chunk,
-            "contentPage": content_page,
+            "contentPage": content,
             "numChunks": numChunks,
             "indexChunk": indexChunk,
             "vectorDoc": embedding_result
@@ -172,26 +156,27 @@ def ProcessTxtFile(documentPath, url, depth, language, documentType):
 
 def ProcessPdfFile(documentPath, url, depth, language, documentType):
     documentName = os.path.basename(documentPath)
+    
+    # Converti PDF in markdown
     markdown_text = pdf_to_markdown(documentPath)
     
-    MAX_CONTENT_LENGTH = 64000
-    content_page = markdown_text[:MAX_CONTENT_LENGTH] if len(markdown_text) > MAX_CONTENT_LENGTH else markdown_text
-    
-    
     DeleteDocumentsInCollection(documentName)
+    
+    # Chunking del markdown
     chunks = [clean_text(c) for c in GetChunks(markdown_text)]
     numChunks = len(chunks)
 
     for indexChunk, chunk in enumerate(chunks, start=1):
         if len(chunk) < minChunkSize:
             continue
-
+        
+        # Embedding del markdown
         embedding_result = (
             EmbeddingText_WX([chunk]) if useWx else EmbeddingText_ST([chunk])[0]
         )
         
         data = [{
-            "docPath": DOCUMENT_FOLDER_PATH,
+            "docPath": folderPath,
             "documentName": documentName,
             "section": 'pdf',
             "link": url,
@@ -199,21 +184,19 @@ def ProcessPdfFile(documentPath, url, depth, language, documentType):
             "depth": int(depth),
             "documentType": documentType,
             "contentChunk": chunk,
-            "contentPage": content_page,
+            "contentPage": markdown_text,
             "numChunks": numChunks,
             "indexChunk": indexChunk,
             "vectorDoc": embedding_result
         }]
         milvusClient.insert(collection_name=collectionName, data=data)
 
-def StartImportProcess():
+if __name__ == "__main__":
     startProcess = datetime.now()
     numProcessed = 0
     numSkipped = 0
-    
-    print("Process started at " + str(startProcess))
 
-    csvPath = os.path.join(DOCUMENT_FOLDER_PATH, DOCUMENT_CSV_FILE)
+    csvPath = os.path.join(folderPath, "scraped_pages.csv")
     if not os.path.exists(csvPath):
         print(f"CSV file not found: {csvPath}")
         sys.exit(1)
@@ -231,7 +214,7 @@ def StartImportProcess():
                 if not fileName:
                     continue
 
-                filePath = os.path.join(DOCUMENT_FOLDER_PATH, fileName)
+                filePath = os.path.join(folderPath, fileName)
                 if not os.path.exists(filePath):
                     logging.warning(f"File not found: {filePath}")
                     numSkipped += 1
@@ -261,6 +244,3 @@ def StartImportProcess():
     print(f"Processed: {numProcessed} files")
     print(f"Skipped: {numSkipped} files")
     print(f"Duration: {(stopProcess - startProcess).seconds / 60:.2f} minutes")
-    
-
-StartImportProcess()

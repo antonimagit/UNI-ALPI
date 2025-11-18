@@ -1,6 +1,6 @@
 print("Starting importing libreries...")
 import os
-from UniMilano_Config import *
+from UniAlpi_Config import *
 from difflib import SequenceMatcher
 from flask import Flask, request, jsonify, render_template, redirect, url_for
 from datetime import datetime
@@ -27,11 +27,11 @@ BOLD = '\033[1m'
 UNDERLINE = '\033[4m'
 RESET = "\033[0m"
 
-APP_PREFIX = "unimilano"
+APP_PREFIX = "unialpi"
 LLM_MODEL = "mistralai/mistral-medium-2505"
 
 ############### MILVUS CONFIGURATION #################
-collectionName = "UniMilano"
+collectionName = "UniAlpi"
 minChunkSize = 20
 ################################################
 
@@ -41,7 +41,7 @@ def tracelog(message):
     print(f"[{timestamp}] -> {message}", flush=True)
 
 DB_CONFIG = {
-    "host": os.getenv("DB_HOST", "postgres"),
+    "host": os.getenv("DB_HOST", "localhost"),
     "database": os.getenv("DB_NAME", "CSMDemoConfig"),
     "port": int(os.getenv("DB_PORT", "5432")),
     "user": os.getenv("DB_USER", "postgres"),
@@ -179,23 +179,23 @@ def GetChunksFromText(pageText, context=""):
 
 @app.route('/')
 def home():
-    return render_template('unimilano.html')
+    return render_template('unialpi.html')
 
 
-@app.route('/unimilanoconfig')
-def unimilano_config():
+@app.route('/unialpiconfig')
+def unialpi_config():
     try:
-        tracelog("Starting /unimilanoconfig route")
+        tracelog("Starting /unialpiconfig route")
         conn = get_db_connection()
         tracelog("DB connection successful")
         cur = conn.cursor()
         
         cur.execute(
-            'SELECT * FROM public."UNIMILANO_BlackList" ORDER BY "idBlackList" ASC')
+            'SELECT * FROM public."UNIALPI_BlackList" ORDER BY "idBlackList" ASC')
         blacklist = cur.fetchall()
 
         cur.execute(
-            'SELECT * FROM public."UNIMILANO_Insights" ORDER BY "ID_insight" ASC')
+            'SELECT * FROM public."UNIALPI_Insights" ORDER BY "ID_insight" ASC')
         insights = cur.fetchall()
 
         cur.close()
@@ -219,18 +219,18 @@ def unimilano_config():
             } for row in insights
         ]
           
-        return render_template('unimilanoconfig.html',
+        return render_template('unialpiconfig.html',
                                blacklist=blacklist_data,
                                insights=insights_data)
     except Exception as e:
         import traceback
         error_details = traceback.format_exc()
-        tracelog(f"❌ Error in /unimilanoconfig: {e}")
+        tracelog(f"❌ Error in /unialpiconfig: {e}")
         tracelog(f"Full traceback:\n{error_details}")
         return f"Errore: {str(e)}<br><pre>{error_details}</pre>", 500
 
 
-@app.route('/emailtemplateunimilano/update', methods=['POST'])
+@app.route('/emailtemplateunialpi/update', methods=['POST'])
 def update_email_template():
     id_email_template = request.form.get('idEmailTemplate')
     mail_template = request.form.get('MailTemplate')
@@ -241,12 +241,12 @@ def update_email_template():
 
         if id_email_template:
             cur.execute(
-                'UPDATE public."UNIMILANO_EmailTemplate" SET "MailTemplate" = %s WHERE "idEmailTemplate" = %s',
+                'UPDATE public."UNIALPI_EmailTemplate" SET "MailTemplate" = %s WHERE "idEmailTemplate" = %s',
                 (mail_template, id_email_template)
             )
         else:
             cur.execute(
-                'INSERT INTO public."UNIMILANO_EmailTemplate" ("MailTemplate") VALUES (%s)',
+                'INSERT INTO public."UNIALPI_EmailTemplate" ("MailTemplate") VALUES (%s)',
                 (mail_template,)
             )
 
@@ -254,13 +254,13 @@ def update_email_template():
         cur.close()
         conn.close()
 
-        return redirect('/unimilanoconfig')
+        return redirect('/unialpiconfig')
     except Exception as e:
         tracelog(f"Error updating email template: {e}")
         return "Errore aggiornamento template", 500
 
 
-@app.route('/blacklistunimilano/add', methods=['POST'])
+@app.route('/blacklistunialpi/add', methods=['POST'])
 def add_blacklist():
     question = request.form.get('question')
     answer = request.form.get('answer')
@@ -271,7 +271,7 @@ def add_blacklist():
         cur = conn.cursor()
 
         cur.execute(
-            'INSERT INTO public."UNIMILANO_BlackList" ("Question", "Answer", "threshold") VALUES (%s, %s, %s)',
+            'INSERT INTO public."UNIALPI_BlackList" ("Question", "Answer", "threshold") VALUES (%s, %s, %s)',
             (question, answer, threshold)
         )
 
@@ -279,32 +279,32 @@ def add_blacklist():
         cur.close()
         conn.close()
 
-        return redirect('/unimilanoconfig')
+        return redirect('/unialpiconfig')
     except Exception as e:
         tracelog(f"Error adding blacklist: {e}")
         return "Errore inserimento", 500
 
 
-@app.route('/blacklistunimilano/delete/<int:id>', methods=['POST'])
+@app.route('/blacklistunialpi/delete/<int:id>', methods=['POST'])
 def delete_blacklist(id):
     try:
         conn = get_db_connection()
         cur = conn.cursor()
 
         cur.execute(
-            'DELETE FROM public."UNIMILANO_BlackList" WHERE "idBlackList" = %s', (id,))
+            'DELETE FROM public."UNIALPI_BlackList" WHERE "idBlackList" = %s', (id,))
 
         conn.commit()
         cur.close()
         conn.close()
 
-        return redirect('/unimilanoconfig')
+        return redirect('/unialpiconfig')
     except Exception as e:
         tracelog(f"Error deleting blacklist: {e}")
         return "Errore eliminazione", 500
 
 
-@app.route('/insightsunimilano/add', methods=['POST'])
+@app.route('/insightsunialpi/add', methods=['POST'])
 def add_insight():
     insight = request.form.get('insight')
     link_risorsa = request.form.get('LinkRisorsa')
@@ -314,7 +314,7 @@ def add_insight():
         cur = conn.cursor()
 
         cur.execute(
-            'INSERT INTO public."UNIMILANO_Insights" ("Insights", "LinkRisorsa") VALUES (%s, %s)',
+            'INSERT INTO public."UNIALPI_Insights" ("Insights", "LinkRisorsa") VALUES (%s, %s)',
             (insight, link_risorsa)
         )
 
@@ -325,13 +325,13 @@ def add_insight():
         # Chiama il custom embedding (devi avere questa funzione)
         insert_data_to_milvus(link_risorsa, insight)
 
-        return redirect('/unimilanoconfig')
+        return redirect('/unialpiconfig')
     except Exception as e:
         tracelog(f"Error adding insight: {e}")
         return "Errore inserimento insight", 500
 
 
-@app.route('/insightsunimilano/delete/<int:id>', methods=['POST'])
+@app.route('/insightsunialpi/delete/<int:id>', methods=['POST'])
 def delete_insight(id):
     link_risorsa = request.form.get('LinkRisorsa')
 
@@ -346,13 +346,13 @@ def delete_insight(id):
         cur = conn.cursor()
 
         cur.execute(
-            'DELETE FROM public."UNIMILANO_Insights" WHERE "ID_insight" = %s', (id,))
+            'DELETE FROM public."UNIALPI_Insights" WHERE "ID_insight" = %s', (id,))
 
         conn.commit()
         cur.close()
         conn.close()
 
-        return redirect('/unimilanoconfig')
+        return redirect('/unialpiconfig')
     except Exception as e:
         tracelog(f"Error deleting insight: {e}")
         return "Errore eliminazione insight", 500
@@ -470,7 +470,7 @@ def GetForbiddenQuestions():
         psCursor = psConnection.cursor()
 
         query = """
-            SELECT * FROM public."UNIMILANO_BlackList"
+            SELECT * FROM public."UNIALPI_BlackList"
         """
         psCursor.execute(query)
         result = psCursor.fetchall()
@@ -654,7 +654,7 @@ def ProcessDocSearch(userChat, filterSearch):
         if not connections.has_connection("default"):
             connections.connect(
                 alias="default", host=MILVUS_HOST, port=MILVUS_PORT)
-        collection = Collection("UniMilano")
+        collection = Collection("UniAlpi")
         collection.load()
         tracelog("Collection loaded succesfully")
         

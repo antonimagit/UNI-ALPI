@@ -20,7 +20,6 @@ class IntentClassifier:
     def load_config(self):        
         """Carica la configurazione dal file JSON - DEVE ESISTERE"""
         try:
-            
             if not os.path.exists(CONFIG_FILE):
                 error_msg = f"CRITICAL ERROR: Config file {CONFIG_FILE} not found!"
                 self.log(error_msg)
