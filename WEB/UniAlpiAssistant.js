@@ -193,7 +193,7 @@ async function onLoad(instance) {
 
 // Configurazione dell'istanza di Watson Assistant
 window.watsonAssistantChatOptions = {
-    integrationID: "f73a5cb3-84f2-41b6-9fe8-ada16280ca31", // The ID of this integration.
+    integrationID: "ee5b8d96-66e4-44d0-b64a-b9b3a7dfaed0", // The ID of this integration.
     region: "wxo-us-south", // The region your integration is hosted in.
     serviceInstanceID: "8a4196f0-04c4-4878-bba0-e0d22a03c401",
     disableSessionHistory: false,
@@ -211,7 +211,7 @@ window.watsonAssistantChatOptions = {
     }
 };
 
-// Carica il script del Watson Assistant dopo un timeout
+
 setTimeout(function () {
     const t = document.createElement('script');
     t.src = "https://web-chat.global.assistant.watson.appdomain.cloud/versions/" +
