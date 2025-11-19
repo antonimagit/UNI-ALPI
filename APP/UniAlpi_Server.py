@@ -460,7 +460,10 @@ def run_script():
                                pattern_info, isTraslated, originalQuery, italianResponse)
 
     tracelog('Duration: ' + str(duration))
-
+    
+    resultGenAI = resultGenAI.replace("di Milano", "delle Alpi")
+    resultGenAI = resultGenAI.replace("Milano", "Alpi")
+    
     return jsonify({"resultGenAI": resultGenAI, "error": resultGenAI})
 
 
@@ -765,4 +768,4 @@ def save_conversation_turn(session_id, user_query, assistant_response, intent=No
 
 if __name__ == "__main__":
     logging.getLogger('werkzeug').setLevel(logging.ERROR)
-    app.run(host='0.0.0.0', port=8080, debug=True)
+    app.run(host='0.0.0.0', port=8080, debug=False)

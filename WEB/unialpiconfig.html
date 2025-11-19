@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="https://www.unimi.it/sites/default/files/favicon_0_0.ico" type="image/vnd.microsoft.icon">
     <title>Home - Università degli studi di ALPI</title>
     <style>
         body {
@@ -225,15 +224,150 @@
                 transform: rotate(360deg);
             }
         }
+
+        .top-bar {
+            background-color: #d59226;
+            padding: 0px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-size: 14px;
+        }
+
+        .top-bar-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .btn-accedi {
+            background-color: #1e5a9e;
+            color: white;
+            padding: 8px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-unica {
+            background-color: #0066cc;
+            color: white;
+            padding: 8px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        header {
+            background-color: #2d5a8c;
+            padding: 0px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .university-name {
+            color: white;
+        }
+
+        .university-name h1 {
+            font-size: 28px;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .university-name .alpiclass {
+            font-weight: 700;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+            margin: 0;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            white-space: nowrap;
+        }
+
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 20px;
+            color: white;
+            font-size: 24px;
+        }
     </style>
 </head>
 
 <body>
-    <div style="text-align:center;height:50px;width:100%; max-height:50px; overflow:hidden;">
-        <a href="/"><img src="images/SectionMain.jpeg" style="width:100%;"></a>
+    <div class="top-bar">
+        <div id="testoRotante" style="width:90%; font-style:italic; font-size: 24px; padding: 20px; text-align: center;">
+        </div>
+        <div class="top-bar-right">
+            <span>ENG</span>
+            <button class="btn-accedi">Accedi</button>
+        </div>
     </div>
+
+    <header>
+        <div class="logo-section" style="cursor:pointer;" onclick="window.location.href='/'">
+            <div class="university-name">
+                <h1>Università degli studi delle <span class="alpiclass">Alpi</span></h1>
+            </div>
+        </div>
+        <div class="header-right">
+            <nav>
+                <ul>
+                    <li><a href="#corsi">Corsi</a></li>
+                    <li><a href="#iscrizioni">Iscrizioni</a></li>
+                    <li><a href="#studenti">Studenti</a></li>
+                    <li><a href="#biblioteche">Biblioteche</a></li>
+                    <li><a href="#carriere">Carriere</a></li>
+                    <li><a href="#alumni">Alumni</a></li>
+                </ul>
+            </nav>
+            <div class="header-icons">
+                <span>🔍</span>
+                <span>☰</span>
+            </div>
+        </div>
+    </header>
+
     <div style="margin: 40px;">
-        
         <section>
             <h2 style="color:#004181;">
                 Gestione Domande Blacklist
@@ -377,6 +511,48 @@
         };
     </script>
 
+    <script>
+        // Array con i testi
+        const testi = [
+            "Da noi la sessione estiva dura finché non si scioglie la neve.",
+            "Wi-Fi disponibile… quando il vento collabora.",
+            "Da noi non c'è il campus: c'è il campeggio.",
+            "Mensa universitaria: polenta per tutti.",
+            "Lezioni annullate: professore disperso."
+        ];
+    
+        // Funzione per mescolare l'array (Fisher-Yates shuffle)
+        function mescolaArray(array) {
+            const nuovoArray = [...array];
+            for (let i = nuovoArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [nuovoArray[i], nuovoArray[j]] = [nuovoArray[j], nuovoArray[i]];
+            }
+            return nuovoArray;
+        }
+    
+        // Mescola i testi all'apertura della pagina
+        const testiMescolati = mescolaArray(testi);
+        let indiceCorrente = 0;
+    
+        // Funzione per cambiare il testo
+        function cambiaTestoDiv() {
+            const divTesto = document.getElementById("testoRotante");
+            divTesto.textContent = testiMescolati[indiceCorrente];
+    
+            indiceCorrente++;
+    
+            // Se abbiamo finito l'array, ricomincia da capo
+            if (indiceCorrente >= testiMescolati.length) {
+                indiceCorrente = 0;
+            }
+        }
+    
+        // Imposta il primo testo subito
+        cambiaTestoDiv();
+    
+        setInterval(cambiaTestoDiv, 7000);
+    </script>
 </body>
 
 </html>

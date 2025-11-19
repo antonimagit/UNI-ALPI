@@ -4,188 +4,484 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="https://www.unimi.it/sites/default/files/favicon_0_0.ico" type="image/vnd.microsoft.icon">
     <title>Home - Università degli studi delle Alpi</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        * {
             margin: 0;
             padding: 0;
-            background-color: #fff;
+            box-sizing: border-box;
         }
 
-        .headerSmall {
-            background-color: #001a33;
-            padding: 15px 20px;
-            padding-left: 250px;
-            /* mantieni l'offset a sinistra */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .top-bar {
+            background-color: #d59226;
+            padding: 0px 50px;
             display: flex;
             justify-content: space-between;
-            /* separa i due elementi */
             align-items: center;
-            /* allinea verticalmente */
-            gap: 2rem;
-            /* spazio minimo tra <a> e <img> */
             color: white;
+            font-size: 14px;
         }
 
-        .headerSmall a {
-            font-size: 0.85rem;
-            font-weight: 300;
-            color: #fff;
-            text-decoration: none;
+        .top-bar-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
         }
 
-        .headerSmall img {
-            width: 230px;
-            height: auto;
-            padding-right: 15%;
+        .btn-accedi {
+            background-color: #1e5a9e;
+            color: white;
+            padding: 8px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
         }
 
-
-        .header {
-            background-color: #225499;
-            padding: 15px 20px;
+        .btn-unica {
+            background-color: #0066cc;
+            color: white;
+            padding: 8px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
             display: flex;
             align-items: center;
+            gap: 5px;
+        }
+
+        header {
+            background-color: #2d5a8c;
+            padding: 20px 50px;
+            display: flex;
             justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
         }
 
         .logo {
-            display: flex;
-            justify-content: left;
-            width: 100%;
-            padding-top: 0px;
-            padding-left: 12%;
-            margin: 0 auto;
-            /* Centra orizzontalmente */
-            margin-top: 10px;
-        }
-
-        .containerHeader {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            width: 100%;
-        }
-
-
-        .leftbox {
-            float: left;
-            width: 33%;
-            /*border:1px solid purple;*/
-        }
-
-        .middlebox {
-            float: left;
-            width: 33%;
-            /*border:1px solid green;*/
-        }
-
-        .rightbox {
-            float: right;
-            width: 33%;
-            /*border:1px solid lime;*/
-        }
-
-        .logo img {
-            height: 100px;
-            margin-right: 10px;
-        }
-
-        .user-info {
-            color: black;
-            font-weight: bold;
-        }
-
-        .main-content {
-            background-color: #225499;
-            color: white;
-            padding: 50px 20px;
-            text-align: left;
-            font-size: 20px;
-            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-        }
-
-        .main-content h1 {
-            font-size: 40px;
-            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-        }
-
-        .cta-button {
+            width: 60px;
+            height: 60px;
             background-color: white;
-            color: #c00;
-            padding: 15px 30px;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .cta-button:hover {
-            background-color: #eee;
-        }
-
-        .info-box {
-            /*background-color: #f4f4f4;*/
-            padding: 30px;
-            color: black;
-        }
-
-        .nav-horizontal {
+            border-radius: 50%;
             display: flex;
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            /* gap parametrico: usa --nav-gap per configurarlo a piacere (es. 1rem, 20px) */
-            gap: 40px;
+            align-items: center;
+            justify-content: center;
         }
 
-        .nav-horizontal a {
-            font-size: 1rem;
-            /* più piccolo */
+        .university-name {
+            color: white;
+        }
+
+        .university-name h1 {
+            font-size: 28px;
             font-weight: 300;
-            /* più leggero (light) */
-            color: #fff;
+            letter-spacing: 2px;
+        }
+
+        .university-name .alpiclass {
+            font-weight: 700;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+            margin: 0;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            white-space: nowrap;
+        }
+
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 20px;
+            color: white;
+            font-size: 24px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        h2 {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+
+        section {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            width: 60%;
+        }
+
+        .config-link {
+            display: block;
+            margin: 10px 0;
+            color: #007BFF;
             text-decoration: none;
         }
 
-        /* Stati del link opzionali */
-        .nav-horizontal a:hover,
-        .nav-horizontal a:focus {
+        .config-linkEmail {
+            margin: 10px 0;
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+        .config-link:hover {
             text-decoration: underline;
+        }
+
+        .input-group {
+            margin-bottom: 10px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .input-group input {
+            width: 15%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid lightgray;
+        }
+
+        .accordion-button {
+            float: right;
+            font-size: 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #004181;
+        }
+
+        .accordion-content {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 3px solid #ccc;
+            border-top: 3px solid #333;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Sezioni contenuto */
+        .content-section {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 13px;
+            margin-bottom: 50px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            color: #2d5a8c;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .stats-section {
+            background: linear-gradient(135deg, #2d5a8c 0%, #1a3a5c 100%);
+            padding: 50px;
+            border-radius: 8px;
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            text-align: center;
+        }
+
+        .stat-item h2 {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .stat-item p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .news-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .news-item {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .news-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, #2d5a8c, #4a7ba7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+        }
+
+        .news-content {
+            padding: 20px;
+        }
+
+        .news-date {
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .news-content h4 {
+            color: #2d5a8c;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .news-content p {
+            color: #666;
+            line-height: 1.6;
         }
     </style>
 </head>
 
 <body>
-    <div style="text-align:center;">
-        <a href="unialpiconfig"><img src="images\SectionMain.jpeg" style="width:100%"></a>
+    <div class="top-bar">
+        <div id="testoRotante" style="width:90%; font-style:italic; font-size: 24px; padding: 20px; text-align: center;">
+        </div>
+        <div class="top-bar-right">
+            <span>ENG</span>
+            <button class="btn-accedi">Accedi</button>
+        </div>
     </div>
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
+
+    <header>
+        <div class="logo-section">
+            <div class="university-name">
+                <h1>Università degli studi delle <span class="alpiclass">Alpi</span></h1>
+            </div>
+        </div>
+        <div class="header-right">
+            <nav>
+                <ul>
+                    <li><a href="#corsi">Corsi</a></li>
+                    <li><a href="#iscrizioni">Iscrizioni</a></li>
+                    <li><a href="#studenti">Studenti</a></li>
+                    <li><a href="#biblioteche">Biblioteche</a></li>
+                    <li><a href="#carriere">Carriere</a></li>
+                    <li><a href="#alumni">Alumni</a></li>
+                </ul>
+            </nav>
+            <div class="header-icons">
+                <span>🔍</span>
+                <span>☰</span>
+            </div>
+        </div>
+    </header>
+
     <div style="text-align:center;">
-        <img src="images\Section2b.jpeg" style="width:100%">
+        <a href="unialpiconfig"><img src="images\unialpi_banner.jpg" style="width:100%"></a>
     </div>
-    <br />
-    <div style="text-align:center;">
-        <img src="images\Section2.jpeg" style="width:100%">
+
+    <div class="content-section">
+        <!-- Card informative -->
+        <div class="info-cards">
+            <div class="card">
+                <div class="card-icon">🎓</div>
+                <h3>Offerta Formativa</h3>
+                <p>Scopri i nostri corsi di laurea triennale, magistrale e i master di primo e secondo livello.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🔬</div>
+                <h3>Ricerca Scientifica</h3>
+                <p>Laboratori all'avanguardia e progetti di ricerca internazionali in tutti i settori.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🌍</div>
+                <h3>Mobilità Internazionale</h3>
+                <p>Programmi Erasmus+ e accordi con università in tutto il mondo.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">📚</div>
+                <h3>Biblioteche</h3>
+                <p>Sistema bibliotecario con migliaia di volumi e risorse digitali accessibili.</p>
+            </div>
+        </div>
+
+        <!-- Statistiche -->
+        <div class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h2>15.000+</h2>
+                    <p>Studenti iscritti</p>
+                </div>
+                <div class="stat-item">
+                    <h2>850+</h2>
+                    <p>Docenti e ricercatori</p>
+                </div>
+                <div class="stat-item">
+                    <h2>45</h2>
+                    <p>Corsi di laurea</p>
+                </div>
+                <div class="stat-item">
+                    <h2>120+</h2>
+                    <p>Partner internazionali</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- News -->
+        <h2 style="color: #2d5a8c; margin-bottom: 30px; font-size: 32px;">Ultime Notizie</h2>
+        <div class="news-section">
+            <div class="news-item">
+                <div class="news-image">📰</div>
+                <div class="news-content">
+                    <div class="news-date">15 Novembre 2025</div>
+                    <h4>Nuovo laboratorio di Intelligenza Artificiale</h4>
+                    <p>Inaugurato il centro di ricerca dedicato allo sviluppo di algoritmi di machine learning e deep
+                        learning.</p>
+                </div>
+            </div>
+            <div class="news-item">
+                <div class="news-image">🏆</div>
+                <div class="news-content">
+                    <div class="news-date">10 Novembre 2025</div>
+                    <h4>Premio internazionale per la ricerca</h4>
+                    <p>Il prof. Rossi riceve il riconoscimento per gli studi sulla sostenibilità ambientale.</p>
+                </div>
+            </div>
+            <div class="news-item">
+                <div class="news-image">👥</div>
+                <div class="news-content">
+                    <div class="news-date">5 Novembre 2025</div>
+                    <h4>Open Day 2025</h4>
+                    <p>Partecipa alle giornate di orientamento per conoscere la nostra offerta formativa.</p>
+                </div>
+            </div>
+        </div>
     </div>
-    <div style="text-align:center;">
-        <img src="images\Section3.jpeg" style="width:100%">
-    </div>
-    <div style="text-align:center;">
-        <img src="images\Section4.jpeg" style="width:100%">
-    </div>
-    <div style="text-align:center;">
-        <img src="images\Section5.jpeg" style="width:100%">
-    </div>
-    <div style="text-align:center;">
-        <img src="images\Section6.jpeg" style="width:100%">
-    </div>
+
 </body>
+<script>
+    // Array con i testi
+    const testi = [
+        "Da noi la sessione estiva dura finché non si scioglie la neve.",
+        "Wi-Fi disponibile… quando il vento collabora.",
+        "Da noi non c'è il campus: c'è il campeggio.",
+        "Mensa universitaria: polenta per tutti.",
+        "Lezioni annullate: professore disperso."
+    ];
+
+    // Funzione per mescolare l'array (Fisher-Yates shuffle)
+    function mescolaArray(array) {
+        const nuovoArray = [...array];
+        for (let i = nuovoArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [nuovoArray[i], nuovoArray[j]] = [nuovoArray[j], nuovoArray[i]];
+        }
+        return nuovoArray;
+    }
+
+    // Mescola i testi all'apertura della pagina
+    const testiMescolati = mescolaArray(testi);
+    let indiceCorrente = 0;
+
+    // Funzione per cambiare il testo
+    function cambiaTestoDiv() {
+        const divTesto = document.getElementById("testoRotante");
+        divTesto.textContent = testiMescolati[indiceCorrente];
+
+        indiceCorrente++;
+
+        // Se abbiamo finito l'array, ricomincia da capo
+        if (indiceCorrente >= testiMescolati.length) {
+            indiceCorrente = 0;
+        }
+    }
+
+    // Imposta il primo testo subito
+    cambiaTestoDiv();
+
+    setInterval(cambiaTestoDiv, 7000);
+</script>
 <script src="UniAlpiAssistant.js"></script>
 
 </html>

@@ -7,7 +7,7 @@ WATSONX_PROJECTID_TZ = os.getenv("WATSONX_PROJECTID_TZ", "05a78408-7b0c-4c6f-ad3
 LLM_GEN_URL = os.getenv("LLM_GEN_URL", "https://us-south.ml.cloud.ibm.com/ml/v1/text/generation?version=2023-05-29")
 TRUNCATE_INPUT_TOKENS = os.getenv("TRUNCATE_INPUT_TOKENS", 512)
 
-REDIS_HOST = os.getenv("REDIS_HOST", "redis-app-shared")
+REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
 REDIS_PORT = os.getenv("REDIS_PORT", "6379")
 
 MILVUS_HOST = os.getenv("MILVUS_HOST", "localhost")
