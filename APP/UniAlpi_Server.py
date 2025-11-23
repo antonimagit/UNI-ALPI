@@ -360,9 +360,10 @@ def delete_insight(id):
 
 @app.route("/query", methods=["POST"])
 def run_script():
-    # ... tutto il tuo codice esistente per /query ...
+    
     tracelog("Start query process")
     startProcess = datetime.now()
+    
     data = request.json
     tracelog(RED + "=" * 70 + RESET)
     tracelog(f"{RED}START NEW CHAT{RESET}")
