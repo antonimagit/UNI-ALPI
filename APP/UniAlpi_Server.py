@@ -1,5 +1,7 @@
 print("Starting importing libreries...")
 import os
+from werkzeug.utils import secure_filename
+import pandas as pd
 from UniAlpi_Config import *
 from difflib import SequenceMatcher
 from flask import Flask, request, jsonify, render_template, redirect, url_for
@@ -15,7 +17,12 @@ import logging
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langdetect import detect
 from deep_translator import GoogleTranslator
+from typing import Callable
 from GLOBAL_Assistant_IntentClassifier import create_classifier
+
+UPLOAD_FOLDER = '/tmp/uploads'
+ALLOWED_EXTENSIONS = {'xlsx', 'xls'}
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 HEADER = '\033[95m'
 OKCYAN = '\033[96m'
@@ -191,7 +198,9 @@ def unialpi_config():
         cur = conn.cursor()
         
         cur.execute(
-            'SELECT * FROM public."UNIALPI_BlackList" ORDER BY "idBlackList" ASC')
+            'SELECT "idBlackList", "Question", "Answer", "threshold" ' +
+            'FROM public."UNIALPI_BlackList"' + 
+            ' ORDER BY "idBlackList" ASC ')
         blacklist = cur.fetchall()
 
         cur.execute(
@@ -767,6 +776,125 @@ def save_conversation_turn(session_id, user_query, assistant_response, intent=No
         tracelog(f"Error saving conversation turn: {e}")
 
 
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/blacklistunialpi/import', methods=['POST'])
+def import_blacklist_excel():
+    try:
+        if 'file' not in request.files:
+            return jsonify({'success': False, 'message': 'Nessun file caricato'}), 400
+        
+        file = request.files['file']
+        
+        if file.filename == '':
+            return jsonify({'success': False, 'message': 'Nome file vuoto'}), 400
+        
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(UPLOAD_FOLDER, filename)
+            file.save(filepath)
+            
+            # Importa i dati
+            risultati = importa_domande_risposte_da_excel(filepath)
+            
+            # Rimuovi il file temporaneo
+            os.remove(filepath)
+            
+            return jsonify({
+                'success': True,
+                'message': f'Importazione completata: {risultati["successi"]}/{risultati["totali"]} successi',
+                'risultati': risultati
+            }), 200
+        else:
+            return jsonify({'success': False, 'message': 'Formato file non valido. Usa .xlsx o .xls'}), 400
+            
+    except Exception as e:
+        tracelog(f"Errore durante l'importazione: {e}")
+        return jsonify({'success': False, 'message': f'Errore: {str(e)}'}), 500
+
+
+def importa_domande_risposte_da_excel(file_path: str, sheet_name: str = 0) -> dict:
+    """
+    Legge un file Excel con colonne 'Domande', 'Risposte' e 'Threshold' e le inserisce in PostgreSQL.
+    """
+    risultati = {
+        'totali': 0,
+        'successi': 0,
+        'errori': 0,
+        'errori_dettagli': []
+    }
+    
+    try:
+        df = pd.read_excel(file_path, sheet_name=sheet_name)
+        
+        if 'Domanda' not in df.columns or 'Risposta' not in df.columns:
+            raise ValueError("Il file deve contenere le colonne 'Domanda' e 'Risposta'")
+        
+        risultati['totali'] = len(df)
+        
+        for index, row in df.iterrows():
+            try:
+                domanda = str(row['Domanda']).strip() if pd.notna(row['Domanda']) else ''
+                risposta = str(row['Risposta']).strip() if pd.notna(row['Risposta']) else ''
+                
+                if 'Threshold' in df.columns and pd.notna(row['Threshold']):
+                    threshold = float(row['Threshold'])
+                else:
+                    threshold = 0.8
+                
+                if not domanda and not risposta:
+                    continue
+                
+                add_blacklist_from_excel(domanda, risposta, threshold)
+                risultati['successi'] += 1
+                
+            except Exception as e:
+                risultati['errori'] += 1
+                risultati['errori_dettagli'].append({
+                    'riga': index + 2,
+                    'domanda': row.get('Domanda', ''),
+                    'errore': str(e)
+                })
+                tracelog(f"Errore alla riga {index + 2}: {e}")
+        
+        tracelog(f"Importazione completata: {risultati['successi']}/{risultati['totali']} successi")
+        
+    except Exception as e:
+        tracelog(f"Errore durante la lettura del file Excel: {e}")
+        raise
+    
+    return risultati
+
+
+def add_blacklist_from_excel(question, answer, threshold):
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        
+        # Prima cancella eventuali record esistenti con la stessa domanda
+        cur.execute(
+            'DELETE FROM public."UNIALPI_BlackList" WHERE "Question" = %s',
+            (question,)
+        )
+        
+        # Poi inserisce il nuovo record
+        cur.execute(
+            'INSERT INTO public."UNIALPI_BlackList" ("Question", "Answer", "threshold") VALUES (%s, %s, %s)',
+            (question, answer, threshold)
+        )
+        
+        conn.commit()
+        cur.close()
+        conn.close()
+        
+        return redirect('/unialpiconfig')
+    except Exception as e:
+        tracelog(f"Error adding blacklist: {e}")
+        return "Errore inserimento", 500
+    
+
+    
 if __name__ == "__main__":
     logging.getLogger('werkzeug').setLevel(logging.ERROR)
     app.run(host='0.0.0.0', port=8080, debug=False)
